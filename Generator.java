@@ -1,6 +1,7 @@
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.io.*;
 
 public class Generator{
   private InputDocument inputDoc;
@@ -15,10 +16,47 @@ public class Generator{
     inputDoc.loadFile(inputFile);
   }
 
+  public String[] generateSynonyms(String[] keywords) {
+    String synonyms = new String();
+    String[] synonymList;
+    List<String> mylist = new ArrayList<String>();
+    for(String term : keywords){
+      String wn = new String("./WordNet-3.0/bin/bin/wn " + term + " -synsn");
+      //System.out.println(wn); //the command
+      
+      try{
+        Process p = Runtime.getRuntime().exec(wn);
+        BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        
+        while ((synonyms = output.readLine()) != null) {
+          if ( synonyms.contains("Sense") ) {
+             synonyms = output.readLine();
+             //System.out.println(synonyms);
+             synonymList = synonyms.split(", ");
+             
+             for(String word : synonymList) {
+               mylist.add(word);
+             }
+             
+             System.out.println("\nnumber of synonyms: " + synonymList.length);
+             for (int z = 0; z < synonymList.length; z++) {
+                System.out.print(synonymList[z] + " ");
+             }
+             
+          }
+        }
+      } 
+      catch (Exception e) {}
+    }
+    synonymList = mylist.toArray(new String[mylist.size()]);
+    return synonymList;  }
+
   public void setKeywords(String[] keywords){
     
     List<String> processedTermList = new ArrayList<String>();
     TermPreprocessor tp = new TermPreprocessor();
+    
+    String[] synonyms = generateSynonyms(keywords);
     
     String resultTerm = null;
     for(String term : keywords){
@@ -27,9 +65,18 @@ public class Generator{
       if(resultTerm !=null)
         processedTermList.add(resultTerm);
     }
+    for(String term : synonyms){
+      resultTerm = tp.preprocess(term);
+
+      if(resultTerm !=null)
+        processedTermList.add(resultTerm);
+    }
 
     this.keywords = processedTermList.toArray(new String[processedTermList.size()]);
-
+    
+    for(String blah : this.keywords) {
+    	System.out.println(blah);
+    }
   }
 
   public String generateSummary(){
@@ -55,7 +102,7 @@ public class Generator{
     //System.out.println("sentenceThreshold = " + senThreshold);
 
     for(int i=0; i<allSentences.length; i++){
-      if(scores[i] >= senThreshold){
+      if(scores[i] > 0){
         significantSentences.add(allSentences[i]);
         
         //System.out.println(allSentences[i]);
@@ -218,12 +265,13 @@ public class Generator{
         int sigNum = StringTrimmer.count(split, '1');
         int keywordNum = StringTrimmer.count(split, '2');
         
-        prevScore = Math.pow((keywordNum*2+sigNum), 2)/split.length();
-        prevScore = 0.01 * Math.pow((keywordNum*2+sigNum), 2)/split.length();
-        score = Math.max(score, prevScore);        
+        //prevScore = Math.pow((keywordNum*2+sigNum), 2)/split.length();
+        //prevScore = 0.01 * Math.pow((keywordNum*2+sigNum), 2)/split.length();
+        //score = Math.max(score, prevScore);   
+        score = keywordNum;     
       }
     }
-    
+    System.out.println("the score is " + score);
     return score;
   }
 
