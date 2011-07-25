@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Generator{
   private InputDocument inputDoc;
-  private double compressRatio = 0.3;
+  private double compressRatio = 0.2;
   private int blockDistance = 3;
   private String[] keywords = null;
 
@@ -94,12 +94,19 @@ public class Generator{
       termCollection = tcp.getTermCollection();
     }
 
-    int termThreshold = termCollection.getFrequencyValues()[10];
+    int termThreshold = termCollection.getFrequencyValues()[5];
+
+    //print out frequency values
+    for(int y=0; y<115; y++) {
+      System.out.print(termCollection.getFrequencyValues()[y] + " ");
+    }
 
     List<String> sigTerms = new ArrayList<String>();
     for(Word term : termCollection){
-      if(term.getFrequency() >= termThreshold)
+      if(term.getFrequency() >= termThreshold){
+        System.out.print(term.getValue() + " ");
         sigTerms.add(term.getValue());
+      }
       else
         break;
     }
@@ -177,7 +184,7 @@ public class Generator{
 
     String symbolicSentence = builder.toString();
 
-    //System.out.println("symbolicSentence: "+symbolicSentence);
+    System.out.println("symbolicSentence: "+symbolicSentence);
 
     return calcSymbolicSentenceScore(symbolicSentence);
 
