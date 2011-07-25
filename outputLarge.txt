@@ -1,0 +1,56 @@
+The work done by Fukushima will first be examined, representing
+earlier models of its class.
+d) Each layer contains feature detecting cells with increasing
+     level of conceptual complexity, the higher the layer level.
+The net effect is feature detectors tolerant of
+displacement and slight distortion.
+This model is based on the premise that instead of
+taking the feature detector to the pattern (multiplying the
+number of feature detectors), we bring the pattern to the feature
+detector (multiplying the pathways.)
+Simple hard-wired
+operators provide a many-to-one mapping from the RF area to the
+feature detector.
+For
+instance, on the lowest layer, the classes are displacement,
+scaling, and rotation.
+On higher layers, the classes include
+positional and set operators.
+Each class has its variations
+within each RF, depending on where the operator maps from, and
+the degree of the mapping.
+On the next level, within a layer, feature detectors take their
+input from the output of the operators weighed by the optimal
+feature pattern.
+The output of those feature detectors
+represents the degree of success with which a particular operator
+maps into the optimal feature.
+From this large pool of feature
+detector outputs within a receptive field, the best variation and
+degree for each class is selected.
+Then, the optimum values
+across the layer from each RF are combined to choose the best
+class of operators.
+Notice that while the application of the
+operator class is enforced upon the layer, each RF implements the
+transformation in a way that generates optimal mapping.
+After one class is selected within a layer, the class is then
+inhibited allowing another class to win in a second round.
+Having recognized a feature for each RF on the first layer, the
+output of the first layer is fed into the second layer.
+Finally, on the topmost layer, a feature
+detector which conceptually represents an object is selected and
+the whole process terminates.
+While its design premise is simple,
+the number of cells required to implement it is proportional to
+the number of RF's, the number of classes, the number of
+variations within a class, and the number of features within each
+layer.
+While that the model can be augmented with
+learning rules that change the weights on the feature detectors,
+it fails to address how a whole new class of operators can be
+learned.
+This model
+incorporates communication between neighboring RF, coupled with
+hill climbing techniques to pick the best transformation to apply
+within an RF image.
