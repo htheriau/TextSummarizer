@@ -9,6 +9,14 @@ public class Generator{
   private int blockDistance = 3;
   private String[] keywords = null;
 
+  boolean cameraQuestion = false;
+  boolean screenQuestion = false;
+  boolean softwareQuestion = false;
+  boolean cpuQuestion = false;
+  String[] cameraWords = {"LED", "MP", "flash", "shooter", "megapixels", "video"};
+  String[] screenWords = {"amoled", "pixels", "resolution", "sharp"};
+  String[] softwareWords = {"android", "OS", "iOS", "version", "windows"};
+  String[] cpuWords = {"mhz", "core", "ghz"};
   private TermCollection termCollection;
 
   public void loadFile(String inputFile){
@@ -52,6 +60,7 @@ public class Generator{
     return synonymList;  }
 
   public void setKeywords(String[] keywords){
+   
     
     List<String> processedTermList = new ArrayList<String>();
     TermPreprocessor tp = new TermPreprocessor();
@@ -60,9 +69,26 @@ public class Generator{
     
     String resultTerm = null;
     for(String term : keywords){
+      //look for keyword camera
       resultTerm = tp.preprocess(term);
 
       if(resultTerm !=null)
+          if(resultTerm.equals("camera")){
+	    cameraQuestion = true;
+	    System.out.println("this is cam");
+	  }
+	  else if(resultTerm.equals("screen")){
+	    screenQuestion = true;
+	    System.out.println("this is cam");
+	  }
+	  else if(resultTerm.equals("software")){
+	    softwareQuestion = true;
+	    System.out.println("this is cam");
+	  }
+	  else if(resultTerm.equals("cpu")){
+	    cpuQuestion = true;
+	    System.out.println("this is cam");
+	  }
         processedTermList.add(resultTerm);
     }
     for(String term : synonyms){
@@ -144,9 +170,9 @@ public class Generator{
     int termThreshold = termCollection.getFrequencyValues()[5];
 
     //print out frequency values
-    for(int y=0; y<115; y++) {
-      System.out.print(termCollection.getFrequencyValues()[y] + " ");
-    }
+    //for(int y=0; y<115; y++) {
+      //System.out.print(termCollection.getFrequencyValues()[y] + " ");
+    //}
 
     List<String> sigTerms = new ArrayList<String>();
     for(Word term : termCollection){
@@ -217,7 +243,20 @@ public class Generator{
     StringBuilder builder = new StringBuilder();
     for(String term : processedTerms){
       if(significantTerms != null && term != null){
-        if(contains(term, keywords)){
+        if(cameraQuestion == true ){
+	  keywords = cameraWords;
+        }
+	if(screenQuestion == true){
+	  keywords = screenWords;
+	}
+	if(softwareQuestion == true){
+	  keywords = softwareWords;
+	}
+	if(cpuQuestion == true){
+	  keywords = cpuWords;
+	}
+	
+	if(contains(term, keywords)){
           builder.append('2');
         }
         else if(contains(term, significantTerms)){
@@ -264,11 +303,12 @@ public class Generator{
       if(split.length() != 0){
         int sigNum = StringTrimmer.count(split, '1');
         int keywordNum = StringTrimmer.count(split, '2');
-        
+        //int questionSpecific = StringTrimmer.count(split, '3'); 
         //prevScore = Math.pow((keywordNum*2+sigNum), 2)/split.length();
         //prevScore = 0.01 * Math.pow((keywordNum*2+sigNum), 2)/split.length();
-        //score = Math.max(score, prevScore);   
-        score = keywordNum;     
+        prevScore = keywordNum;
+	score = Math.max(score, prevScore);   
+        //score = keywordNum;     
       }
     }
     System.out.println("the score is " + score);
