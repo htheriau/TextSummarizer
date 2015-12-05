@@ -34,7 +34,14 @@ public class Main{
     generator.loadFile(filePath);
     generator.setKeywords(keywords);
 //    generator.generateSignificantSentences();
-    System.out.println(generator.generateSummary());
+    try {
+       PrintWriter printWriter = new PrintWriter(new FileWriter("outputTech.txt"));
+	   printWriter.println(generator.generateSummary());
+       printWriter.close();  // no need to flush, since close() does it anyway.
+   } catch (IOException e) {
+       e.printStackTrace();
+   }
+
 //    generator.generateSummary();
   }
 }
